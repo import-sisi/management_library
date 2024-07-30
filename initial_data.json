@@ -1,0 +1,68 @@
+[
+  {
+    "model": "library.City",
+    "pk": 1,
+    "fields": {
+      "name": "New York"
+    }
+  },
+  {
+    "model": "library.City",
+    "pk": 2,
+    "fields": {
+      "name": "Los Angeles"
+    }
+  },
+  {
+    "model": "library.City",
+    "pk": 3,
+    "fields": {
+      "name": "Chicago"
+    }
+  },
+  {
+    "model": "library.genre",
+    "pk": 1,
+    "fields": {
+      "name": "Fiction"
+    }
+  },
+  {
+    "model": "library.genre",
+    "pk": 2,
+    "fields": {
+      "name": "Non-Fiction"
+    }
+  },
+  {
+    "model": "library.genre",
+    "pk": 3,
+    "fields": {
+      "name": "Science Fiction"
+    }
+  },
+  {
+    "model": "library.author",
+    "pk": 1,
+    "fields": {
+      "name": "Author One",
+      "birth_city": 1
+    }
+  },
+  {
+    "model": "library.author",
+    "pk": 2,
+    "fields": {
+      "name": "Author Two",
+      "birth_city": 2
+    }
+  },
+  {
+    "model": "library.author",
+    "pk": 3,
+    "fields": {
+      "name": "Author Three",
+      "birth_city": 3
+    }
+  }
+]
