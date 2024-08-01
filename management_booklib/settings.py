@@ -78,6 +78,8 @@ WSGI_APPLICATION = 'management_booklib.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -88,15 +90,14 @@ DATABASES = {
         'NAME': 'booklib_db',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': 'mongodb://localhost:27017',
+            'host': os.getenv('DATABASE_URL', 'mongodb://mongodb:27017'),  # Use environment variable
         }
     }
 }
 
 DATABASE_ROUTERS = ['management_booklib.db_router.MongoDBRouter']
-
-KAFKA_BOOTSTRAP_SERVERS = 'localhost:9092'
-KAFKA_TOPIC = 'book_transfers'
+# KAFKA_BOOTSTRAP_SERVERS = 'localhost:9092'
+# KAFKA_TOPIC = 'book_transfers'
 
 
 

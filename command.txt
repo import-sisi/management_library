@@ -6,3 +6,7 @@
 
 # docker
     docker-compose up -d
+# check 
+    management_booklib> docker exec -it 2cb2398d58717bdccba7d081c1a7045e61535f0aa1e12b27e4200856bf48bae0 /bin/sh
+        # mongo --host mongodb --port 27017
+        /bin/sh: 1: mongo: not found

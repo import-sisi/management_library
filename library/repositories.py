@@ -16,7 +16,6 @@ connect(
 
 
 
-producer = RabbitMQProducer(servers=['localhost:9092'], topic='book_transfers')
 
 class BookRepository:
     @staticmethod

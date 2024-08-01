@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: mongo
-    container_name: mongodb
+    container_name: mongodb  # Optional: Ensure consistent naming
     ports:
       - "27017:27017"
   
@@ -23,3 +23,5 @@ services:
     depends_on:
       - db
       - rabbitmq
+    environment:
+      - DATABASE_URL=mongodb://db:27017/booklib_db
