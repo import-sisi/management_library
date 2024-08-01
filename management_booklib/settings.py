@@ -81,19 +81,24 @@ WSGI_APPLICATION = 'management_booklib.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
+    },
+    'mongo': {
+        'ENGINE': 'djongo',
+        'NAME': 'booklib_db',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': 'mongodb://localhost:27017',
+        }
     }
 }
+
+DATABASE_ROUTERS = ['management_booklib.db_router.MongoDBRouter']
 
 KAFKA_BOOTSTRAP_SERVERS = 'localhost:9092'
 KAFKA_TOPIC = 'book_transfers'
 
-# MongoDB settings (already in place)
-MONGODB_SETTINGS = {
-    'db': 'booklib_db',
-    'host': 'localhost',
-    'port': 27017,
-}
+
 
 CORS_ORIGIN_ALLOW_ALL = True
 

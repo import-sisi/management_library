@@ -9,37 +9,53 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import Http404
 from rest_framework.views import APIView
 
-class BookListView(APIView):
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from mongoengine import Q
+from library.models_mongo import BookSearch
+from library.serializers import BookSearchSerializer
+
+class BookSearchView(APIView):
     def get(self, request):
-        filters = {
-            'query': request.GET.get('query', ''),
-            'min_price': request.GET.get('min_price'),
-            'max_price': request.GET.get('max_price'),
-            'genre': request.GET.get('genre'),
-            'author_city': request.GET.get('author_city')
-        }
-        sort_by = request.GET.get('sort_by')
-        page = int(request.GET.get('page', 1))
-        page_size = int(request.GET.get('page_size', 10))
+        search_query = request.query_params.get('search', '')
+        min_price = request.query_params.get('min_price')
+        max_price = request.query_params.get('max_price')
+        genre = request.query_params.get('genre')
+        author_id = request.query_params.get('author_id')
+        sort_by = request.query_params.get('sort_by', 'price')
 
-        try:
-            books, total_books = BookSearchRepository.search_books(
-                filters['query'],
-                price_range=(filters['min_price'], filters['max_price']),
-                genre=filters['genre'],
-                author_city=filters['author_city'],
-                sort_by=sort_by,
-                page=page,
-                page_size=page_size
-            )
-            serialized_books = BookSearchSerializer(books, many=True)
-            return Response({
-                'total_books': total_books,
-                'books': serialized_books.data
-            }, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        filters = Q()
+        if search_query:
+            filters &= Q(title__icontains=search_query) | Q(description__icontains=search_query)
+        if min_price:
+            filters &= Q(price__gte=float(min_price))
+        if max_price:
+            filters &= Q(price__lte=float(max_price))
+        if genre:
+            filters &= Q(genre=genre)
+        if author_id:
+            filters &= Q(authors=author_id)
 
+        books = BookSearch.objects(filters).order_by(sort_by)
+
+        # Pagination
+        page = int(request.query_params.get('page', 1))
+        page_size = int(request.query_params.get('page_size', 10))
+        start = (page - 1) * page_size
+        end = start + page_size
+        total_books = books.count()
+
+        books = books[start:end]
+
+        serializer = BookSearchSerializer(books, many=True)
+        return Response({
+            'total': total_books,
+            'page': page,
+            'page_size': page_size,
+            'results': serializer.data
+        }, status=status.HTTP_200_OK)
+    
 class BookListCreateView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer

@@ -2,7 +2,7 @@ from mongoengine import connect
 from .models_mongo import BookSearch
 from .models import Book, Author, Genre
 
-from .producer import Producer
+from .producer import RabbitMQProducer
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 # Connect to MongoDB
@@ -16,7 +16,7 @@ connect(
 
 
 
-producer = Producer(servers=['localhost:9092'], topic='book_transfers')
+producer = RabbitMQProducer(servers=['localhost:9092'], topic='book_transfers')
 
 class BookRepository:
     @staticmethod

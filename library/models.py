@@ -1,10 +1,9 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .producer import Producer
+from .producer import RabbitMQProducer
 
 # Initialize the producer
-producer = Producer(servers=['localhost:9092'], topic='book_topic')
 
 class City(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -25,19 +24,20 @@ class Book(models.Model):
     authors = models.ManyToManyField(Author)
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        book_data = {
-            'title': self.title,
-            'description': self.description,
-            'publication_date': str(self.publication_date),
-            'isbn': self.isbn,
-            'price': float(self.price),
-            'genre': self.genre.name,
-            'authors': [author.id for author in self.authors.all()]
-        }
-        producer.send_message({'operation': 'create', 'data': book_data})
+
 
 @receiver(post_save, sender=Book)
-def post_save_book(sender, instance, **kwargs):
-    instance.save()
+def send_book_to_mongodb(sender, instance, **kwargs):
+    authors = [author.id for author in instance.authors.all()]
+    book_data = {
+        'title': instance.title,
+        'description': instance.description,
+        'publication_date': str(instance.publication_date),
+        'isbn': instance.isbn,
+        'price': float(instance.price),
+        'authors': authors,
+        'genre': instance.genre.name,
+    }
+    producer = RabbitMQProducer()
+    producer.send_message(book_data)
+    producer.close()
