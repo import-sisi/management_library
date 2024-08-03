@@ -5,7 +5,7 @@ Django
 djangorestframework
 mongoengine
 six
-
+django-cors-headers
 # kafka-python @ git+https://github.com/dpkp/kafka-python.git@a6d0579d3cadd3826dd364b01bc12a2173139abc
 django-cors-headers
 pika

@@ -47,6 +47,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -93,7 +94,7 @@ DATABASES = {
         'NAME': 'booklib_db',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': os.getenv('DATABASE_URL', 'mongodb://mongodb:27017'),  # Use environment variable
+            'host': os.getenv('DATABASE_URL', 'localhost:27017'),  # Use environment variable
         }
     }
 }
@@ -105,6 +106,12 @@ DATABASE_ROUTERS = ['management_booklib.db_router.MongoDBRouter']
 
 
 CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOWED_ORIGINS = [
+#     "https://example.com",
+#     "https://sub.example.com",
+#     "http://localhost:8080",
+#     "http://127.0.0.1:9000",
+# ]
 
 
 # Password validation
